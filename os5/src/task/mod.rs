@@ -16,6 +16,8 @@ mod processor;
 mod switch;
 #[allow(clippy::module_inception)]
 mod task;
+mod stride;
+pub use stride::Stride;
 
 use crate::loader::get_app_data_by_name;
 use alloc::sync::Arc;
@@ -110,7 +112,7 @@ pub fn mmap(start: usize, len: usize, prot: usize) -> isize {
     if len % PAGE_SIZE != 0 {
         length = len + (PAGE_SIZE - len % PAGE_SIZE);
     }
-    let task = take_current_task().unwrap();
+    let task = current_task().unwrap();
     let mut inner = task.inner_exclusive_access();
 
     let vpn_start = VirtPageNum::from(start / PAGE_SIZE);
@@ -143,7 +145,7 @@ pub fn munmap(start: usize, len: usize) -> isize {
     if len % PAGE_SIZE != 0 {
         length = len + (PAGE_SIZE - len % PAGE_SIZE);
     }
-    let task = take_current_task().unwrap();
+    let task = current_task().unwrap();
     let mut inner = task.inner_exclusive_access();
     let vpn_start = VirtPageNum::from(start / PAGE_SIZE);
     let vpn_end = VirtPageNum::from((start + length) / PAGE_SIZE);

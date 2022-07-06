@@ -125,19 +125,24 @@ pub fn sys_task_info(ti: *mut TaskInfo) -> isize {
 }
 
 // YOUR JOB: 实现sys_set_priority，为任务添加优先级
-pub fn sys_set_priority(_prio: isize) -> isize {
-    -1
+pub fn sys_set_priority(prio: isize) -> isize {
+    if prio < 2 {
+        return -1;
+    } else {
+        let task = current_task().unwrap();
+        let mut inner = task.inner_exclusive_access();
+        inner.prio = prio as u8;
+        return prio;
+    }
 }
 
 // YOUR JOB: 扩展内核以实现 sys_mmap 和 sys_munmap
 pub fn sys_mmap(start: usize, len: usize, port: usize) -> isize {
-    // mmap(start, len, port)
-    -1
+    mmap(start, len, port)
 }
 
 pub fn sys_munmap(start: usize, len: usize) -> isize {
-    // munmap(start, len)
-    -1
+    munmap(start, len)
 }
 
 //

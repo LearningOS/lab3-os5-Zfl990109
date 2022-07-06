@@ -9,7 +9,6 @@ use crate::trap::{trap_handler, TrapContext};
 use alloc::sync::{Arc, Weak};
 use alloc::vec::Vec;
 use core::cell::RefMut;
-
 /// Task control block structure
 ///
 /// Directly save the contents that will not change during running
@@ -46,6 +45,10 @@ pub struct TaskControlBlockInner {
     pub children: Vec<Arc<TaskControlBlock>>,
     /// It is set when active exit or execution error occurs
     pub exit_code: i32,
+    /// prio
+    pub prio: u8,
+    /// stride
+    pub stride: u8,
 }
 
 /// Simple access to its internal fields
@@ -103,6 +106,8 @@ impl TaskControlBlock {
                     parent: None,
                     children: Vec::new(),
                     exit_code: 0,
+                    prio: 16u8,
+                    stride: 0u8,
                 })
             },
         };
@@ -170,6 +175,8 @@ impl TaskControlBlock {
                     parent: Some(Arc::downgrade(self)),
                     children: Vec::new(),
                     exit_code: 0,
+                    prio: 16u8,
+                    stride: 0u8,
                 })
             },
         });
@@ -213,6 +220,8 @@ impl TaskControlBlock {
                     parent: Some(Arc::downgrade(self)),
                     children: Vec::new(),
                     exit_code: 0,
+                    prio: 16u8,
+                    stride: 0u8,
                 })
             },
         });
